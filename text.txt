@@ -1,0 +1,206 @@
+TF-IDF = Term Frequency × Inverse Document Frequency
+
+TF-IDF ke 2 parts
+
+TF = Term Frequency
+
+Word ek particular job mein kitni baar appear ho raha hai.
+
+IDF = Inverse Document Frequency
+
+Word poore dataset mein kitna common ya uncommon hai.
+
+Simple idea:
+
+common word → less importance
+distinctive word → more importance
+
+Isliye TF-IDF model ko job posting ke important words ke patterns identify karne mein help karta hai.
+
+
+simple idea
+
+Common word
+    ↓
+Low importance
+
+Rare but useful word
+    ↓
+Higher importance
+
+
+TF-IDF ki zarurat kyun hai?
+
+Agar hum sirf word count use karein, to common words bhi important appear ho sakte hain.
+
+TF-IDF common words ki importance reduce karta hai aur relatively distinctive words ko zyada weight deta hai.
+
+TF-IDF = Text ko numbers mein convert karta hai aur words ki importance calculate karta hai.
+
+flow
+
+Job Posting
+     ↓
+Data Cleaning
+     ↓
+Combine Text
+     ↓
+TF-IDF
+     ↓
+Numbers
+     ↓
+Logistic Regression
+     ↓
+Fake / Real
+
+
+Phir hamara flow hoga:
+
+Combined Text
+      ↓
+   TF-IDF
+      ↓
+Numbers
+      ↓
+Logistic Regression
+      ↓
+Real / Fake
+
+Lekin ek important correction
+
+Hum TF-IDF ko poore dataset par fit nahi karenge, kyunki usse test data ki information training mein leak ho sakti hai.
+
+Isliye pehle:
+
+Dataset
+   ↓
+Train / Test Split
+   ↓
+TF-IDF sirf Training par fit
+   ↓
+Training + Test ko transform
+
+
+    Pura concept ek picture ki tarah yaad rakho
+
+
+                 DATASET
+               17,880 jobs
+                    │
+                    │
+              train_test_split()
+                    │
+          ┌─────────┴─────────┐
+          │                   │
+       TRAIN 80%           TEST 20%
+      14,304 jobs           3,576 jobs
+          │                   │
+      X_train               X_test
+      y_train               y_test
+          │                   │
+          ↓                   │
+       MODEL LEARNS           │
+                              ↓
+                       MODEL PREDICTS
+                              │
+                              ↓
+                         Compare with
+                           y_test
+
+
+"TfidfVectorizer" this tool convert text to numbers
+
+"vectorizer"
+
+vectorizer = TfidfVectorizer(
+    max_features=5000,
+    stop_words="english"
+)
+
+vectorizer
+    ↓
+Text leta hai
+    ↓
+Important words identify karta hai
+    ↓
+Words ko numbers mein convert karta hai
+
+
+
+TRAINING
+X_train
+   ↓
+fit
+   ↓
+Vocabulary learned
+   ↓
+transform
+   ↓
+X_train_tfidf
+
+
+TESTING
+X_test
+   ↓
+same vocabulary
+   ↓
+transform
+   ↓
+X_test_tfidf
+
+
+
+Logistic Regression
+
+
+Logistic Regression ek classification algorithm hai jo input features ko dekh kar probability calculate karta hai.
+
+
+Logistic Regression ek model hai jo numerical features ko dekh kar 0 ya 1 predict karta hai.
+
+
+Hamare project mein:
+
+Job Text
+   ↓
+TF-IDF
+   ↓
+5,000 numerical features
+   ↓
+Logistic Regression
+   ↓
+Probability
+   ↓
+0 = Real
+1 = Fake
+
+
+
+venv Python project ke liye ek separate environment banata hai jahan us project ke packages aur Python dependencies alag rehti hain.
+
+
+3. Precision
+
+Model ne jitni jobs ko Fake bola, un mein se kitni actually Fake thin.
+
+4. Recall
+
+Jo jobs actually Fake thin, un mein se model ne kitni Fake detect kar li.
+
+5. F1-score
+
+Precision aur Recall ka combined measure.
+
+Ek line mein yaad rakho
+
+Precision = Jab model Fake bole, kitna sahi hai?
+Recall = Jo Fake actually hain, un mein se kitne pakre?
+F1 = Precision + Recall ka balance
+
+
+stratify=y use kiya taake Real/Fake ratio maintain rahe.
+
+
+"app.py"
+
+joblib ek Python library hai jo trained Python objects ko save aur load karne ke liye use hoti hai.
