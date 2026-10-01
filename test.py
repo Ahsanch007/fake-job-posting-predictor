@@ -211,4 +211,6 @@ joblib.dump(model, "model.pkl")
 # We need the same vectorizer when new job text is received
 joblib.dump(vectorizer, "vectorizer.pkl")
 
+
+
 print("\nModel and vectorizer saved successfully!")
